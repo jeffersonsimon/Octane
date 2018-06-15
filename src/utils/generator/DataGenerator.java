@@ -56,7 +56,7 @@ public class DataGenerator {
                 entities.add(generateRequirement(octane, fields));
                 break;
             case "requirement_folders":
-                entities.add(generateRequirement(octane, fields));
+                entities.add(generateRequirementfolder(octane, fields));
                 break;
         }
         return entities;
@@ -126,18 +126,54 @@ public class DataGenerator {
         fields.add(parentField);
         return new EntityModel(fields);
     }
-    private static EntityModel generateRequirement(Octane octane, Set<FieldModel> fields) throws Exception {
-        Collection<EntityModel> phases = octane.entityList("phases").get().execute();
-        EntityModel phase = phases.iterator().next();
-        Collection<EntityModel> themes = octane.entityList("parent").get().execute();
-        EntityModel theme = themes.iterator().next();
-
+    @SuppressWarnings("rawtypes")
+	private static EntityModel generateRequirement(Octane octane, Set<FieldModel> fields) throws Exception {
+    	
+    	
+    	Set<FieldModel> fieldsPhase = new HashSet<>();
+    	fieldsPhase.add(new StringFieldModel("type","phase"));
+    	fieldsPhase.add(new StringFieldModel("id","phase.requirement_document.draft"));
+       
         FieldModel name = new StringFieldModel("name", "sdk_requirement_" + UUID.randomUUID());
-        FieldModel phaseField = new ReferenceFieldModel("phase", phase);
-        FieldModel parentField = new ReferenceFieldModel("parent", theme);
+        FieldModel description = new StringFieldModel("description", "sdk_requirement_description" + UUID.randomUUID());
+        Collection<EntityModel> users = octane.entityList("workspace_users").get().execute();
+        EntityModel user = users.iterator().next();
+        FieldModel owner = new ReferenceFieldModel("owner", user);
+        
+        Set<FieldModel> fieldsParent = new HashSet<>();
+        fieldsParent.add(new StringFieldModel("type","requirement"));
+        fieldsParent.add(new StringFieldModel("id","3001"));
+        FieldModel phaseField = new ReferenceFieldModel("phase", new EntityModel(fieldsPhase));
+        FieldModel parentField = new ReferenceFieldModel("parent", new EntityModel(fieldsParent));
 
         fields.add(name);
+        fields.add(description);
+        fields.add(owner);
         fields.add(phaseField);
+        fields.add(parentField);
+        return new EntityModel(fields);
+    }
+	private static EntityModel generateRequirementfolder(Octane octane, Set<FieldModel> fields) throws Exception {
+    	
+    	
+   
+       
+        FieldModel name = new StringFieldModel("name", "rf_" + UUID.randomUUID());
+       
+        Collection<EntityModel> users = octane.entityList("workspace_users").get().execute();
+        EntityModel user = users.iterator().next();
+        FieldModel owner = new ReferenceFieldModel("owner", user);
+        
+        Set<FieldModel> fieldsParent = new HashSet<>();
+        fieldsParent.add(new StringFieldModel("type","requirement"));
+        fieldsParent.add(new StringFieldModel("id","2001"));
+        
+        FieldModel parentField = new ReferenceFieldModel("parent", new EntityModel(fieldsParent));
+
+        fields.add(name);
+        
+        fields.add(owner);
+        
         fields.add(parentField);
         return new EntityModel(fields);
     }

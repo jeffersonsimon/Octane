@@ -49,7 +49,7 @@ public class uploader {
         // finally we build the context and get an Octane instance:
 
         octane = octaneBuilder.build();
-         ENTITY = "requirement_folders "; // you can mention any entity you want here like user stories, requirements, etc
+         ENTITY = "requirement_folders"; // you can mention any entity you want here like user stories, requirements, etc
         
         entityList = octane.entityList(ENTITY);
         
